@@ -1,0 +1,39 @@
+<div class="list row">
+  <div class="col-md-8">
+  </div>
+  <div class="col-md-6">
+    <h4>Tutorials List</h4>
+    <ul class="list-group">
+      <li
+        class="list-group-item"
+        *ngFor="let student of students; let i = index"
+        [class.active]="i == currentIndex"
+        (click)="setActiveTutorial(student, i)"
+      >
+        {{ student.name }}
+      </li>
+    </ul>
+
+    <button class="m-3 btn btn-sm btn-danger" (click)="removeAllTutorials()">
+      Remove All
+    </button>
+  </div>
+  <div class="col-md-6">
+    <div *ngIf="currentStudent">
+      <h4>Students</h4>
+      <div>
+        <label><strong>name:</strong></label> {{ currentStudent.name }}
+      </div>
+      <div>
+        <label><strong>E-mail:</strong></label>
+        {{ currentStudent.email }}
+      </div>
+      
+    </div>
+
+    <div *ngIf="!currentStudent">
+      <br />
+      <p>Please click on a Tutorial...</p>
+    </div>
+  </div>
+</div>
