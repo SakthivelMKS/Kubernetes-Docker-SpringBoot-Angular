@@ -1,0 +1,60 @@
+apiVersion: v1 # Kubernetes API version
+kind: Service # Kubernetes resource kind we are creating
+metadata: # Metadata of the resource kind we are creating
+  name: springboot-k8s-mysql
+  labels:
+    name: springboot-k8s-mysql
+spec:
+  ports:
+   - nodePort: 30163
+     port: 8080 # The port that the service is running on in the cluster
+     targetPort: 8080 # The port exposed by the service
+     protocol: TCP  
+  selector:
+    app: springboot-k8s-mysql
+  type: LoadBalancer  #type of the service. LoadBalancer indicates that our service will be external.
+---
+apiVersion: apps/v1
+kind: Deployment # Kubernetes resource kind we are creating
+metadata:
+  name: springboot-k8s-mysql
+spec:
+  selector:
+    matchLabels:
+      app: springboot-k8s-mysql
+  replicas: 3 # Number of replicas that will be created for this deployment
+  template:
+    metadata:
+      labels:
+        app: springboot-k8s-mysql
+    spec:
+      containers:
+        - name: springboot-k8s-mysql 
+          image: springboot-k8s-mysql:1.0  # Image that will be used to containers in the cluster
+          ports:
+            - containerPort: 8080 # The port that the container is running on in the cluster 
+          env:
+          - name: DB_HOST
+            valueFrom:
+              configMapKeyRef:
+               name: db-conf
+               key: host
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: db-conf
+                key: name
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: db-credintials
+                key: username  
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: db-credintials
+                key: password  
+              
+              
+              
+              
